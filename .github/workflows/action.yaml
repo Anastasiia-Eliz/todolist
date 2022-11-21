@@ -6,43 +6,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: docker build
-      run: docker build -t elizarova25/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
-             - name: docker login
-             run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-               - name: docker push
-                 run: docker push elizarova25/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-             deploy:
-               runs-on: ubuntu-latest
-               needs: build_and_push
-               env:
-                 DB_USER: ${{ secrets.DB_USER }}
-                 DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-                 DB_NAME: ${{ secrets.DB_NAME }}
-               steps:
-                 - name: clone code
-                   uses: actions/checkout@v2
-                 - name: render configs
-                   run: |
-                      mkdir deploy
-                      cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
-                      cat .env | envsubst > deploy/.env
-                 - name: clone files to server
-                   uses: appleboy/scp-action@master
-                   with:
-                     host: ${{ secrets.HOST }}
-                     username: ${{ secrets.USERNAME }}
-                     password: ${{ secrets.PASSWORD }}
-                     source: "deploy/docker-compose.yaml,deploy/.env"
-                     target: "todolist"
-                     strip_components: 1
-                 - name: run docker-compose
-                   uses: appleboy/ssh-action@master
-                   with:
-                     host: ${{ secrets.HOST }}
-                     username: ${{ secrets.USERNAME }}
-                     password: ${{ secrets.PASSWORD }}
-                     script: |
-                       cd todolist
-                       echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
+        run: docker build -t elizarova25/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+      - name: docker login
+        run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: docker push
+        run: docker push elizarova25/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+  deploy:
+     runs-on: ubuntu-latest
+     needs: build_and_push
+     env:
+       DB_USER: ${{ secrets.DB_USER }}
+       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+       DB_NAME: ${{ secrets.DB_NAME }}
+    steps:
+      - name: clone code
+        uses: actions/checkout@v2
+      - name: render configs
+        run: |
+          mkdir deploy
+          cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+          cat .env | envsubst > deploy/.env
+        - name: clone files to server
+          uses: appleboy/scp-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            password: ${{ secrets.PASSWORD }}
+            source: "deploy/docker-compose.yaml,deploy/.env"
+            target: "todolist"
+            strip_components: 1
+        - name: run docker-compose
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            password: ${{ secrets.PASSWORD }}
+            script: |
+              cd todolist
+              echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
