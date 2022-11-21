@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: $DB_HOST
     depends_on:
       db:
         condition: service_healthy
