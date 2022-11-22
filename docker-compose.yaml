@@ -33,7 +33,7 @@ services:
       - .env
     command: python3 manage.py migrate
   db:
-    image: postgres:latest
+    image: postgres:14.0-alpine
     environment:
       POSTGRES_USER: $DB_USER
       POSTGRES_PASSWORD: $DB_PASSWORD
