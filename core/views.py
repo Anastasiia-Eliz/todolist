@@ -13,6 +13,7 @@ class SignUpView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = SignUpSerializer
 
+
 class LoginView(CreateAPIView):
     """Login user"""
     serializer_class = LoginSerializer
