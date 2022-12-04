@@ -25,7 +25,7 @@ services:
       - .env
     command: python3 manage.py migrate
   postgres:
-    image: postgres:latest
+    image: postgres:15.1
     environment:
       POSTGRES_USER: $DB_USER
       POSTGRES_PASSWORD: $DB_PASSWORD
