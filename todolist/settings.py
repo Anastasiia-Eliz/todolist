@@ -47,6 +47,8 @@ INSTALLED_APPS = [
 	'core',
     'rest_framework',
     'social_django',
+    'goals',
+    'django_filters',
 
 ]
 
