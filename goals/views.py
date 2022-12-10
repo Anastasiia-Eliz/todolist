@@ -1,14 +1,13 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, filters
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework import permissions
 from rest_framework.pagination import LimitOffsetPagination
-
+from goals.models import GoalCategory, GoalComment
+from goals.serializers.category import CategoryCreateSerializer, CategorySerializer
 from goals.filters import GoalDateFilter
-from goals.models import GoalCategory, Goal, GoalComment
-from goals.serializers import GoalCreateSerializer, CategoryCreateSerializer, CategorySerializer, GoalSerializer, \
-	CommentCreateSerializer, CommentSerializer
-
+from goals.models import Goal
+from goals.serializers.comment import CommentSerializer, CommentCreateSerializer
+from goals.serializers.goal import GoalCreateSerializer, GoalSerializer
 
 class GoalCategoryCreateView(CreateAPIView):
 	model = GoalCategory
@@ -47,7 +46,6 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
 		instance.is_deleted = True
 		instance.save()
 		return instance
-
 
 class GoalCreateView(CreateAPIView):
 	model = Goal
