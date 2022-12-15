@@ -69,13 +69,8 @@ class GoalCategory(models.Model):
 	created = models.DateTimeField(verbose_name="Дата создания")
 	updated = models.DateTimeField(verbose_name="Дата последнего обновления")
 	board = models.ForeignKey(
-		Board, verbose_name="Доска", on_delete=models.PROTECT, related_name="categories")
-
-	def save(self, *args, **kwargs):
-		if not self.id:  # Когда объект только создается, у него еще нет id
-			self.created = timezone.now()  # проставляем дату создания
-		self.updated = timezone.now()  # проставляем дату обновления
-		return super().save(*args, **kwargs)
+		Board, verbose_name="Доска", on_delete=models.PROTECT, related_name="categories"
+	)
 
 
 class Goal(models.Model):
