@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from core.serializers import ProfileSerializer
-from goals.models import Goal, BoardParticipant
+from goals.models.models import Goal, BoardParticipant
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):

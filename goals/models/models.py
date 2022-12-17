@@ -1,40 +1,22 @@
 from django.db import models
-from django.utils import timezone
-
+from .date_mixin_model import DatesModelMixin
 from core.models import User
 
 
-class Board(models.Model):
+class Board(DatesModelMixin):
 	class Meta:
 		verbose_name = "Доска"
 		verbose_name_plural = "Доски"
 
 	title = models.CharField(verbose_name="Название", max_length=255)
 	is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
-	created = models.DateTimeField(verbose_name="Дата создания")
-	updated = models.DateTimeField(verbose_name="Дата последнего обновления")
-
-	def save(self, *args, **kwargs):
-		if not self.id:
-			self.created = timezone.now()
-		self.updated = timezone.now()
-		return super().save(*args, **kwargs)
 
 
-class BoardParticipant(models.Model):
+class BoardParticipant(DatesModelMixin):
 	class Meta:
 		unique_together = ("board", "user")
 		verbose_name = "Участник"
 		verbose_name_plural = "Участники"
-
-	created = models.DateTimeField(verbose_name="Дата создания")
-	updated = models.DateTimeField(verbose_name="Дата последнего обновления")
-
-	def save(self, *args, **kwargs):
-		if not self.id:
-			self.created = timezone.now()
-		self.updated = timezone.now()
-		return super().save(*args, **kwargs)
 
 	class Role(models.IntegerChoices):
 		owner = 1, "Владелец"
@@ -58,22 +40,20 @@ class BoardParticipant(models.Model):
 	)
 
 
-class GoalCategory(models.Model):
+class GoalCategory(DatesModelMixin):
 	class Meta:
 		verbose_name = "Категория"
 		verbose_name_plural = "Категории"
 
-	title = models.CharField(verbose_name="Название", max_length=255)
-	user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
-	is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
-	created = models.DateTimeField(verbose_name="Дата создания")
-	updated = models.DateTimeField(verbose_name="Дата последнего обновления")
 	board = models.ForeignKey(
 		Board, verbose_name="Доска", on_delete=models.PROTECT, related_name="categories"
 	)
+	title = models.CharField(verbose_name="Название", max_length=255)
+	user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
+	is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
 
-class Goal(models.Model):
+class Goal(DatesModelMixin):
 	class Status(models.IntegerChoices):
 		to_do = 1, "К выполнению"
 		in_progress = 2, "В процессе"
@@ -101,17 +81,9 @@ class Goal(models.Model):
 	)
 	user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT, related_name="goals")
 	category = models.ForeignKey(GoalCategory, on_delete=models.CASCADE)
-	created = models.DateTimeField(verbose_name="Дата создания")
-	updated = models.DateTimeField(verbose_name="Дата последнего обновления")
-
-	def save(self, *args, **kwargs):
-		if not self.id:  # Когда объект только создается, у него еще нет id
-			self.created = timezone.now()  # проставляем дату создания
-		self.updated = timezone.now()  # проставляем дату обновления
-		return super().save(*args, **kwargs)
 
 
-class GoalComment(models.Model):
+class GoalComment(DatesModelMixin):
 	class Meta:
 		verbose_name = "Комментарий"
 		verbose_name_plural = "Комментарии"
@@ -119,11 +91,3 @@ class GoalComment(models.Model):
 	text = models.TextField(verbose_name="Текст")
 	goal = models.ForeignKey(Goal, verbose_name="Цель", on_delete=models.PROTECT, related_name="goal_comments")
 	user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.PROTECT, related_name="goal_comments")
-	created = models.DateTimeField(verbose_name="Дата создания")
-	updated = models.DateTimeField(verbose_name="Дата последнего обновления")
-
-	def save(self, *args, **kwargs):
-		if not self.id:  # Когда объект только создается, у него еще нет id
-			self.created = timezone.now()  # проставляем дату создания
-		self.updated = timezone.now()  # проставляем дату обновления
-		return super().save(*args, **kwargs)
