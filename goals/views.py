@@ -41,7 +41,7 @@ class GoalCategoryListView(ListAPIView):
 class GoalCategoryView(RetrieveUpdateDestroyAPIView):
 	model = GoalCategory
 	serializer_class = CategorySerializer
-	permission_classes = [CategoryPermissions]
+	permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
 
 	def get_queryset(self):
 		return GoalCategory.objects.filter(
@@ -109,6 +109,9 @@ class CommentCreateView(CreateAPIView):
 	model = GoalComment
 	permission_classes = [permissions.IsAuthenticated]
 	serializer_class = CommentCreateSerializer
+
+	def perform_create(self, serializer:CommentCreateSerializer):
+		serializer.save(goal_id=self.request.data['goal'])
 
 
 class CommentListView(ListAPIView):
