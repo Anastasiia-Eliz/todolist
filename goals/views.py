@@ -100,7 +100,7 @@ class GoalView(RetrieveUpdateDestroyAPIView):
 		)
 
 	def perform_destroy(self, instance):
-		instance.status = Goal.Status.archived
+		instance.is_deleted = True
 		instance.save()
 		return instance
 
