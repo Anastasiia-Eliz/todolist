@@ -21,7 +21,7 @@ class GoalCategoryCreateView(CreateAPIView):
 
 class GoalCategoryListView(ListAPIView):
 	model = GoalCategory
-	permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
+	permission_classes = [CategoryPermissions]
 	serializer_class = CategorySerializer
 	pagination_class = LimitOffsetPagination
 	filter_backends = [
@@ -41,7 +41,7 @@ class GoalCategoryListView(ListAPIView):
 class GoalCategoryView(RetrieveUpdateDestroyAPIView):
 	model = GoalCategory
 	serializer_class = CategorySerializer
-	permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
+	permission_classes = [CategoryPermissions]
 
 	def get_queryset(self):
 		return GoalCategory.objects.filter(
@@ -68,7 +68,7 @@ class GoalCreateView(CreateAPIView):
 
 class GoalListView(ListAPIView):
 	model = Goal
-	permission_classes = [permissions.IsAuthenticated, GoalPermissions]
+	permission_classes = [permissions.IsAuthenticated]
 	serializer_class = GoalSerializer
 	pagination_class = LimitOffsetPagination
 	filter_backends = [
@@ -77,9 +77,9 @@ class GoalListView(ListAPIView):
 		filters.SearchFilter,
 	]
 	filterset_class = GoalDateFilter
-	ordering_fields = ["priority", "due_date"]
-	ordering = ["priority", "due_date"]
-	search_fields = ["title"]
+	ordering_fields = ["title", "created", "priority", "due_date"]
+	ordering = ["-priority", "due_date", "title"]
+	search_fields = ["title", "description"]
 
 	def get_queryset(self):
 		return Goal.objects.filter(
@@ -91,7 +91,7 @@ class GoalListView(ListAPIView):
 class GoalView(RetrieveUpdateDestroyAPIView):
 	model = Goal
 	serializer_class = GoalSerializer
-	permission_classes = [permissions.IsAuthenticated, GoalPermissions]
+	permission_classes = [GoalPermissions]
 
 	def get_queryset(self):
 		return Goal.objects.filter(
@@ -110,8 +110,6 @@ class CommentCreateView(CreateAPIView):
 	permission_classes = [permissions.IsAuthenticated]
 	serializer_class = CommentCreateSerializer
 
-	def perform_create(self, serializer:CommentCreateSerializer):
-		serializer.save(goal_id=self.request.data['goal'])
 
 
 class CommentListView(ListAPIView):
@@ -133,7 +131,7 @@ class CommentListView(ListAPIView):
 class CommentView(RetrieveUpdateDestroyAPIView):
 	model = GoalComment
 	serializer_class = CommentSerializer
-	permission_classes = [permissions.IsAuthenticated, CommentPermissions]
+	permission_classes = [CommentPermissions]
 
 	def get_queryset(self):
 		return GoalComment.objects.filter(

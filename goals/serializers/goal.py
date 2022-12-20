@@ -12,16 +12,17 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 		read_only_fields = ("id", "created", "updated", "user")
 		fields = "__all__"
 
-	def validate(self, attrs):
-		roll = BoardParticipant.objects.filter(
-			user=attrs.get('user'),
-			board=attrs.get('board'),
-			role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
-		).exists()
-		if roll:
-			return attrs
-		raise serializers.ValidationError('You do not have permission to perform this action')
+	def validate_category(self, value):
+		if value.is_deleted:
+			raise serializers.ValidationError("not allowed in deleted category")
 
+		user = value.board.participants.filter(user=self.context["request"].user).first()
+		if not user:
+			raise serializers.ValidationError("not owner or writer in the related board")
+		elif user.role not in [BoardParticipant.Role.owner, BoardParticipant.Role.writer]:
+			raise serializers.ValidationError("not owner or writer in the related board")
+
+		return value
 
 class GoalSerializer(serializers.ModelSerializer):
 	user = ProfileSerializer(read_only=True)
