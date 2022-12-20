@@ -4,7 +4,7 @@ from rest_framework import permissions, filters
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from goals.models.models import GoalCategory, GoalComment, Board
-from goals.permissions import BoardPermissions, CategoryPermissions
+from goals.permissions import BoardPermissions, CategoryPermissions, GoalPermissions, CommentPermissions
 from goals.serializers.board import BoardSerializer, BoardListSerializer, BoardCreateSerializer
 from goals.serializers.category import CategoryCreateSerializer, CategorySerializer
 from goals.filters import GoalDateFilter
@@ -68,7 +68,7 @@ class GoalCreateView(CreateAPIView):
 
 class GoalListView(ListAPIView):
 	model = Goal
-	permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated, GoalPermissions]
 	serializer_class = GoalSerializer
 	pagination_class = LimitOffsetPagination
 	filter_backends = [
@@ -91,7 +91,7 @@ class GoalListView(ListAPIView):
 class GoalView(RetrieveUpdateDestroyAPIView):
 	model = Goal
 	serializer_class = GoalSerializer
-	permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated, GoalPermissions]
 
 	def get_queryset(self):
 		return Goal.objects.filter(
@@ -113,7 +113,7 @@ class CommentCreateView(CreateAPIView):
 
 class CommentListView(ListAPIView):
 	model = GoalComment
-	permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated, CommentPermissions]
 	serializer_class = CommentSerializer
 	pagination_class = LimitOffsetPagination
 	filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
@@ -130,7 +130,7 @@ class CommentListView(ListAPIView):
 class CommentView(RetrieveUpdateDestroyAPIView):
 	model = GoalComment
 	serializer_class = CommentSerializer
-	permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated, CommentPermissions]
 
 	def get_queryset(self):
 		return GoalComment.objects.filter(
