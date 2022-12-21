@@ -23,6 +23,8 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError("not owner or writer of the related board")
 
 		return value
+
+
 class CommentSerializer(serializers.ModelSerializer):
 	user = ProfileSerializer(read_only=True)
 

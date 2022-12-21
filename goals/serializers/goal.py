@@ -29,6 +29,6 @@ class GoalSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Goal
-		read_only_fields = ("id", "created", "updated", "user")
+		read_only_fields = ("id", "created", "updated", "user","category", "description")
 		fields = "__all__"
 

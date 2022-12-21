@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_django',
     'goals',
-    'django_filters'
+    'django_filters',
+    'bot',
 
 
 
@@ -137,6 +138,8 @@ SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
+
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -160,3 +163,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Rest-framework, swagger
 
 
+TG_TOKEN = env('TG_TOKEN')

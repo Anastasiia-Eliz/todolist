@@ -80,7 +80,6 @@ class BoardSerializer(serializers.ModelSerializer):
 						board=instance, user=new_part["user"], role=new_part["role"]
 					)
 
-
 			if validated_data.get('title'):
 				instance.title = validated_data["title"]
 

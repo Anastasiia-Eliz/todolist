@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   front:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     ports:
     - 80:80
     depends_on:
@@ -23,6 +23,17 @@ services:
       - .env
     ports:
       - "8000:8000"
+  bot:
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+    command: python3 manage.py runbot
   migrations:
     build:
       context: .
