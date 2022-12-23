@@ -1,6 +1,6 @@
 import requests
 
-from ._dc import GetUpdatesResponse, SendMessageResponse
+from .schemas import GetUpdatesResponse, SendMessageResponse
 
 
 class TgClient:
