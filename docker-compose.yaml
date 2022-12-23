@@ -26,14 +26,17 @@ services:
   bot:
     build:
       context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    command: python3 manage.py runbot
     depends_on:
       postgres:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-    env_file:
-      - .env
-    command: python3 manage.py runbot
+
   migrations:
     build:
       context: .
