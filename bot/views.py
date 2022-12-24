@@ -1,26 +1,33 @@
-from rest_framework import permissions, status
+from django.contrib.sites import requests
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from bot.models import TgUser
+from bot.serializers import TgUserSerializer
+from bot.tg.client import TgClient
+from goals.models.models import BoardParticipant, Board
 from todolist.settings import TG_TOKEN
-from .models import TgUser
-from .serializers import TgUserUpdateSerializer
-from .tg import TgClient
 
 
-class TgUserUpdateView(GenericAPIView):
-	model = TgUser
-	permission_classes = [permissions.IsAuthenticated]
-	http_method_names = ['patch']
-	serializer_class = TgUserUpdateSerializer
+class VerificationView(GenericAPIView):
+    model = TgUser
+    permission_classes = [IsAuthenticated]
+    serializer_class = TgUserSerializer
 
-	def patch(self, request, *args, **kwargs):
-		data = self.serializer_class(request.data).data
-		tg_client = TgClient(TG_TOKEN)
-		tg_user = TgUser.objects.filter(verification_code=data['verification_code']).first()
-		if not tg_user:
-			return Response(status=status.HTTP_400_BAD_REQUEST)
-		tg_user.user = request.user
-		tg_user.save()
-		tg_client.send_message(chat_id=tg_user.tg_chat_id, text='Успешно')
-		return Response(data=data, status=status.HTTP_201_CREATED)
+    def patch(self, request: requests, *args: str, **kwargs: int) -> Response:
+        serializer: TgUserSerializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        tg_user: TgUser = serializer.validated_data['tg_user']
+        tg_user.user = self.request.user
+        tg_user.save(update_fields=['user'])
+        instance_serializer: TgUserSerializer = self.get_serializer(tg_user)
+        board = Board(title='Telegram board')
+        board.save()
+        board_p = BoardParticipant(board=board, user=tg_user.user)
+        board_p.save()
+        tg_client = TgClient(TG_TOKEN)
+        tg_client.send_message(tg_user.tg_chat_id, 'Вы успешно подтвердили свою личность.')
+
+        return Response(instance_serializer.data)

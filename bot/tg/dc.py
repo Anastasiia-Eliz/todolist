@@ -1,8 +1,8 @@
 from dataclasses import field
-from typing import ClassVar, Type, List
+from typing import List
 
 from marshmallow_dataclass import dataclass
-from marshmallow import Schema, EXCLUDE
+from marshmallow import EXCLUDE
 
 
 @dataclass
@@ -31,7 +31,6 @@ class MessageChat:
 
 
 
-
 @dataclass
 class Message:
     message_id: int
@@ -39,7 +38,7 @@ class Message:
     chat: MessageChat
     date: int
     text: str
-    # entities: list[MessageEntities]
+
 
     class Meta:
         unknown = EXCLUDE
@@ -59,7 +58,7 @@ class GetUpdatesResponse:
     ok: bool
     result: List[UpdateOdj]
 
-    Schema: ClassVar[Type[Schema]] = Schema
+
 
     class Meta:
         unknown = EXCLUDE
@@ -70,7 +69,7 @@ class SendMessageResponse:
     ok: bool
     result: Message
 
-    Schema: ClassVar[Type[Schema]] = Schema
+
 
     class Meta:
         unknown = EXCLUDE

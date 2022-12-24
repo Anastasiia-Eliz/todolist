@@ -2,16 +2,16 @@ from django.core.management import BaseCommand
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
-from bot.tg.schemas import Message
-from bot.utils_bot import BotGoal
-from todolist import settings
+from bot.tg.dc import Message
+from bot.bot_utils import BotGoal
+from todolist.settings import TG_TOKEN
 
 
 class Command(BaseCommand):
 
     def __init__(self, *args: str, **kwargs: int):
         super().__init__(*args, **kwargs)
-        self.tg_client = TgClient(settings.TG_TOKEN)
+        self.tg_client = TgClient(TG_TOKEN)
 
     def verified_user(self, tg_user: TgUser, msg: Message) -> None:
         if msg.text == '/goals':
@@ -19,19 +19,19 @@ class Command(BaseCommand):
         elif msg.text == '/start':
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f'Вы уже подтвердили свою личность!✅'
+                text=f'Вы уже подтвердили свою личность!'
             )
         elif 'create' in msg.text:
             BotGoal(tg_user=tg_user, msg=msg, tg_client=self.tg_client).create_goal()
         elif msg.text == '/cancel':
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f'Операция отменена!✅'
+                text=f'Операция отменена!'
             )
         else:
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f'Неизвестная команда!🤔'
+                text=f'Неизвестная команда!'
             )
 
     def add_user(self, msg: Message) -> None:
@@ -41,7 +41,7 @@ class Command(BaseCommand):
             username=msg.msg_from.username
         )
         if create:
-            self.tg_client.send_message(chat_id=msg.chat.id, text='Зарегистрировал вас!👌')
+            self.tg_client.send_message(chat_id=msg.chat.id, text='Успешно')
         if tg_user.user:
             self.verified_user(tg_user=tg_user, msg=msg)
         else:

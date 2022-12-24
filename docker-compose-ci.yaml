@@ -25,7 +25,9 @@ services:
         condition: service_completed_successfully
     env_file:
       - .env
-    command: python3 manage.py runbot
+    command: >
+      bash -c 'python3 manage.py runbot'
+
   migrations:
     image: elizarova25/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     depends_on:

@@ -1,6 +1,6 @@
 import requests
 
-from bot.tg.schemas import GetUpdatesResponse, SendMessageResponse
+from bot.tg.dc import GetUpdatesResponse, SendMessageResponse
 
 
 class TgClient:
