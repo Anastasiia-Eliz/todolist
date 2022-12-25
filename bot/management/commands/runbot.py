@@ -38,7 +38,7 @@ class Command(BaseCommand):
         tg_user, create = TgUser.objects.get_or_create(
             tg_user_id=msg.msg_from.id,
             tg_chat_id=msg.chat.id,
-            username=msg.msg_from.username
+            tg_username=msg.msg_from.username
         )
         if create:
             self.tg_client.send_message(chat_id=msg.chat.id, text='Успешно')
