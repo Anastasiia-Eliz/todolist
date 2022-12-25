@@ -1,9 +1,8 @@
 import string
 import random
 
-from django.core.validators import MinLengthValidator
 from django.db import models
-
+from core.models import User
 
 
 class TgUser(models.Model):
@@ -11,7 +10,7 @@ class TgUser(models.Model):
 	tg_chat_id = models.BigIntegerField()
 	tg_username = models.CharField(max_length=32, null=True, blank=True, default=None)
 	verification_code = models.CharField(max_length=10, unique=True)
-	user = models.ForeignKey('core.User', on_delete=models.CASCADE, null=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
 	def set_verification_code(self):
 		length = 10
