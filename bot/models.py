@@ -1,9 +1,9 @@
 import string
-from random import random
+import random
 
 from django.core.validators import MinLengthValidator
 from django.db import models
-from django.utils.crypto import get_random_string
+
 
 
 class TgUser(models.Model):
@@ -13,8 +13,8 @@ class TgUser(models.Model):
 	verification_code = models.CharField(max_length=10, unique=True)
 	user = models.ForeignKey('core.User', on_delete=models.CASCADE, null=True)
 
-	def set_verification_code(self) -> None:
-		length = 10  # Длина кода подтверждения
+	def set_verification_code(self):
+		length = 10
 		digits = string.digits
 		v_code = ''.join(random.sample(digits, length))
 		self.verification_code = v_code
