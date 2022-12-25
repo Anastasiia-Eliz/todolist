@@ -9,7 +9,7 @@ from django.db import models
 class TgUser(models.Model):
 	tg_user_id = models.BigIntegerField(unique=True)
 	tg_chat_id = models.BigIntegerField()
-	tg_username = models.CharField(max_length=32, validators=[MinLengthValidator(5)])
+	tg_username = models.CharField(max_length=32, null=True, blank=True, default=None)
 	verification_code = models.CharField(max_length=10, unique=True)
 	user = models.ForeignKey('core.User', on_delete=models.CASCADE, null=True)
 
