@@ -33,8 +33,7 @@ services:
         condition: service_completed_successfully
     env_file:
       - .env
-    command: >
-      bash -c 'python3 manage.py runbot'
+    command: python3 manage.py runbot
   migrations:
     build:
       context: .
