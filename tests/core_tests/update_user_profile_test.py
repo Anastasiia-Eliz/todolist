@@ -29,13 +29,13 @@ def test_update_user_profile(client):
 
 	update_user_response = client.patch(
 		'/core/profile',
-		{'first_name': 'Test'},
+		{'first_name': 'Test1'},
 		content_type='application/json')
 
 	user_before_update = User.objects.get(username=user_data['username'])
 
 	assert create_user_response.status_code == 201
-	assert login_user_response.status_code == 201
+	assert login_user_response.status_code == 200
 	assert login_user_response.data.get('first_name') == user_data['first_name']
 	assert update_user_response.status_code == 200
 	assert user_after_update.first_name != user_before_update.first_name

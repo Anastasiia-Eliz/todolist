@@ -36,6 +36,6 @@ def test_update_password(client):
         content_type='application/json')
 
     assert create_user_response.status_code == 201
-    assert login_user_response.status_code == 201
-    assert update_password_response.status_code == 200
-    assert login_response.status_code == 201
+    assert login_user_response.status_code == 200
+    assert update_password_response.status_code == 204
+    assert login_response.status_code == 200

@@ -13,6 +13,7 @@ def test_board_detail(client, create_login_user):
 
     expected_response = {
         "id": board_create.data['id'],
+        "participants": board_detail_response.data['participants'],
         "created": board_create.data['created'],
         "updated": board_create.data['updated'],
         "title": "test board",
