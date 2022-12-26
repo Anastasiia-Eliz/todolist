@@ -34,5 +34,7 @@ Todolist
 Накатить миграции:
 python ./manage.py makemigraitons
 python ./manage.py migrate
+Создать superuser
+- python manage.py createsuperuser
 Запустить проект
 python ./manage.py runserver
