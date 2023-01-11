@@ -14,13 +14,8 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-    environment:
-      DEBUG: $DEBUG
-      SECRET_KEY: $SECRET_KEY
-      ALLOWED_HOSTS: $ALLOWED_HOSTS
-      SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
-      TG_TOKEN: $TG_TOKEN
+    env_file:
+      - /home/deploy/todolist/.env
   bot:
     image: elizarova25/todolist:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     depends_on:
@@ -28,13 +23,8 @@ services:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
-    environment:
-      DEBUG: $DEBUG
-      SECRET_KEY: $SECRET_KEY
-      ALLOWED_HOSTS: $ALLOWED_HOSTS
-      SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
-      TG_TOKEN: $TG_TOKEN
+    env_file:
+      - /home/deploy/todolist/.env
     command: python3 manage.py runbot
 
   migrations:
@@ -42,13 +32,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      DEBUG: $DEBUG
-      SECRET_KEY: $SECRET_KEY
-      ALLOWED_HOSTS: $ALLOWED_HOSTS
-      SOCIAL_AUTH_VK_OAUTH2_KEY: $SOCIAL_AUTH_VK_OAUTH2_KEY
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: $SOCIAL_AUTH_VK_OAUTH2_SECRET
-      TG_TOKEN: $TG_TOKEN
+    env_file:
+      - /home/deploy/todolist/.env
     command: python3 manage.py migrate
   postgres:
     image: postgres:latest
@@ -60,7 +45,7 @@ services:
       - "5433:5432"
     restart: always
     env_file:
-      - .env
+      - /home/deploy/todolist/.env
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER}" ]
       interval: 5s

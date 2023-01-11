@@ -20,7 +20,7 @@ services:
       migrations:
         condition: service_completed_successfully
     env_file:
-      - .env
+      - /home/deploy/todolist/.env
     ports:
       - "8000:8000"
   bot:
@@ -32,7 +32,7 @@ services:
       migrations:
         condition: service_completed_successfully
     env_file:
-      - .env
+      - /home/deploy/todolist/.env
     command: python3 manage.py runbot
   migrations:
     build:
@@ -41,7 +41,7 @@ services:
       postgres:
         condition: service_healthy
     env_file:
-      - .env
+      - /home/deploy/todolist/.env
     command: python3 manage.py migrate
   postgres:
     image: postgres:latest
@@ -53,7 +53,7 @@ services:
       - "5432:5432"
     restart: always
     env_file:
-      - .env
+      - /home/deploy/todolist/.env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
       interval: 5s
